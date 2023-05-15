@@ -1,4 +1,4 @@
-package cn.nurasoft.library
+package cn.nurasoft.request
 
 import java.io.*
 import java.nio.charset.Charset
@@ -23,7 +23,7 @@ private constructor() {
         @JvmOverloads
         fun decompressToStringForZlib(
             bytesToDecompress: ByteArray,
-            charsetName: String = "UTF-8"
+            charsetName: Charset = Charsets.UTF_8
         ): String? {
             val bytesDecompressed = decompressForZlib(
                 bytesToDecompress
@@ -161,7 +161,7 @@ private constructor() {
          * @throws IOException
          */
         @JvmOverloads
-        fun decompressForGzip(compressed: ByteArray, charsetName: String = "UTF-8"): String? {
+        fun decompressForGzip(compressed: ByteArray, charsetName: Charset = Charsets.UTF_8): String? {
             val bufferSize = compressed.size
             var gis: GZIPInputStream? = null
             var bis: ByteArrayInputStream? = null

@@ -1,11 +1,11 @@
-package cn.nurasoft.library
+package cn.nurasoft.request
 
 import android.text.TextUtils
 import android.util.Log
-import cn.nurasoft.library.CharacterHandler.Companion.jsonFormat
-import cn.nurasoft.library.CharacterHandler.Companion.xmlFormat
-import cn.nurasoft.library.RequestInterceptor.Companion.isJson
-import cn.nurasoft.library.RequestInterceptor.Companion.isXml
+import cn.nurasoft.request.CharacterHandler.Companion.jsonFormat
+import cn.nurasoft.request.CharacterHandler.Companion.xmlFormat
+import cn.nurasoft.request.RequestInterceptor.Companion.isJson
+import cn.nurasoft.request.RequestInterceptor.Companion.isXml
 import okhttp3.MediaType
 import okhttp3.Request
 
@@ -129,7 +129,7 @@ class DefaultFormatPrinter : FormatPrinter {
         private const val DEFAULT_LINE = "│ "
 
         //来自上游的配置，我不修改。为了解决android studio打印的问题。
-        private val ARMS = arrayOf("-A-", "-R-", "-M-", "-S-")
+        private val MARS = arrayOf( "-M-","-A-", "-R-", "-S-")
         private val last: ThreadLocal<Int> = object : ThreadLocal<Int>() {
             override fun initialValue(): Int {
                 return 0
@@ -164,7 +164,7 @@ class DefaultFormatPrinter : FormatPrinter {
             if (last.get()!! >= 4) {
                 last.set(0)
             }
-            val s = ARMS[last.get() as Int]
+            val s = MARS[last.get() as Int]
             last.set(last.get()!! + 1)
             return s
         }
@@ -190,12 +190,8 @@ class DefaultFormatPrinter : FormatPrinter {
         private fun getRequest(request: Request): Array<String> {
             val log: String
             val header = request.headers.toString()
-            log = METHOD_TAG + request.method + DOUBLE_SEPARATOR + if (isEmpty(
-                    header
-                )
-            ) "" else HEADERS_TAG + LINE_SEPARATOR + dotHeaders(
-                header
-            )
+            log = METHOD_TAG + request.method + DOUBLE_SEPARATOR + if (isEmpty(header)
+            ) "" else HEADERS_TAG + LINE_SEPARATOR + dotHeaders(header)
             return log.split(LINE_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }
                 .toTypedArray()
         }
@@ -236,12 +232,16 @@ class DefaultFormatPrinter : FormatPrinter {
             var tag = "─ "
             if (headers.size > 1) {
                 for (i in headers.indices) {
-                    tag = if (i == 0) {
-                        CORNER_UP
-                    } else if (i == headers.size - 1) {
-                        CORNER_BOTTOM
-                    } else {
-                        CENTER_LINE
+                    tag = when (i) {
+                        0 -> {
+                            CORNER_UP
+                        }
+                        headers.size - 1 -> {
+                            CORNER_BOTTOM
+                        }
+                        else -> {
+                            CENTER_LINE
+                        }
                     }
                     builder.append(tag).append(headers[i]).append("\n")
                 }

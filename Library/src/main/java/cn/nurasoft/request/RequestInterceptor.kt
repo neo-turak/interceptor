@@ -1,7 +1,7 @@
-package cn.nurasoft.library
+package cn.nurasoft.request
 
 import android.util.Log
-import cn.nurasoft.library.CharacterHandler.Companion.jsonFormat
+import cn.nurasoft.request.CharacterHandler.Companion.jsonFormat
 import okhttp3.*
 import okio.Buffer
 import java.io.IOException
@@ -15,9 +15,28 @@ import java.util.concurrent.TimeUnit
  * ================================================
  * 解析框架中的网络请求和响应结果,并以日志形式输出,调试神器
  */
-class RequestInterceptor : Interceptor {
-    private var mPrinter: FormatPrinter = DefaultFormatPrinter()
-    private var printLevel = PrintLevel.ALL
+class RequestInterceptor
+private constructor(
+    private val mPrinter: FormatPrinter,
+    private val printLevel: PrintLevel
+) : Interceptor {
+    class Builder(
+      private var mPrinter: FormatPrinter = DefaultFormatPrinter(),
+        private var mPrintLevel: PrintLevel = PrintLevel.REQUEST
+    ) {
+        fun setFormatPrinter(printer: FormatPrinter): Builder {
+            this.mPrinter = printer
+            return this
+        }
+
+        fun setPrintLevel(level: PrintLevel): Builder {
+            this.mPrintLevel = level
+            return this
+        }
+
+        fun build() = RequestInterceptor(mPrinter, mPrintLevel)
+    }
+
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
         val request: Request = chain.request()
@@ -114,10 +133,12 @@ class RequestInterceptor : Interceptor {
         encoding: String?,
         clone: Buffer
     ): String? {
-        var charset:Charset = StandardCharsets.UTF_8
+        var charset: Charset = Charsets.UTF_8
         val contentType = responseBody!!.contentType()
         if (contentType != null) {
-            charset = contentType.charset(charset)!!
+            contentType.charset(charset)?.let {
+                charset = it
+            }
         }
         //content 使用 gzip 压缩
         return if ("gzip".equals(encoding, ignoreCase = true)) {
@@ -134,10 +155,9 @@ class RequestInterceptor : Interceptor {
             )
         } else {
             //content 没有被压缩, 或者使用其他未知压缩方式
-            clone.readString(charset!!)
+            clone.readString(charset)
         }
     }
-
 
 
     companion object {
@@ -157,11 +177,11 @@ class RequestInterceptor : Interceptor {
                 if (contentType != null) {
                     charset = contentType.charset(charset)
                 }
-                var json: String? = mBuffer.readString(charset!!)
+                var json: String = mBuffer.readString(charset!!)
                 if (UrlEncoderUtils.hasUrlEncoded(json)) {
                     json = URLDecoder.decode(json, convertCharset(charset))
                 }
-                jsonFormat(json!!)
+                jsonFormat(json)
             } catch (e: IOException) {
                 e.printStackTrace()
                 "{\"error\": \"" + e.message + "\"}"
@@ -231,12 +251,15 @@ class RequestInterceptor : Interceptor {
             ).contains("x-www-form-urlencoded")
         }
 
-        fun convertCharset(charset: Charset?): String {
-            val s = charset.toString()
-            val i = s.indexOf("[")
+        fun convertCharset(s: Charset?): Charset {
+            if (s.toString() == "") {
+                return Charset.defaultCharset()
+            }
+            val cs = s.toString()
+            val i = cs.indexOf("[")
             return if (i == -1) {
-                s
-            } else s.substring(i + 1, s.length - 1)
+                charset(cs)
+            } else charset(cs.substring(i + 1, cs.length - 1))
         }
     }
 }
