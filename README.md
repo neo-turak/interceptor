@@ -51,7 +51,7 @@ just implement to FormatPrinter then you are ready to go.
 
 ## Result
 
-┌────── Response ──────────────────────────
+┌────── Response ──────────────────────────────
 │
 | URL: http://api.txapi.cn/v1/hitokoto                            
 │                                                                                           
