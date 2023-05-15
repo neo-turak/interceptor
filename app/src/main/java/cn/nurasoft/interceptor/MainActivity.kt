@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
             .client(okHttpClient)
             .build()
 
-      val service = re.create(ApiService::class.java)
+        val service = re.create(ApiService::class.java)
 
         findViewById<Button>(R.id.btnRequest).setOnClickListener {
             lifecycleScope.launch {

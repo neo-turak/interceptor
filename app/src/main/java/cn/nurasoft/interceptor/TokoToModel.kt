@@ -1,7 +1,6 @@
 package cn.nurasoft.interceptor
 
 import androidx.annotation.Keep
-import android.os.Parcelable
 
 @Keep
 
