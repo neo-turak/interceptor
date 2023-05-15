@@ -18,8 +18,8 @@ val okHttpClient = OkHttpClient.Builder()
 
 ## 效果
 
-┌────── Response ───────────────────────────────────────────────────────────────────────
-│ URL: http://api.txapi.cn/v1/hitokoto?token=FtTtwONEZmM                                    
+┌────── Response ──────────────────────────
+│ URL: http://api.txapi.cn/v1/hitokoto                            
 │                                                                                           
 │ /v1/hitokoto - is success : true - Received in: 70ms                                      
 │                                                                                           
@@ -45,4 +45,4 @@ val okHttpClient = OkHttpClient.Builder()
 │     },                                                                                    
 │     "time": 1684124415                                                                    
 │ }                                                                                         
-└─────────────────────────────────────────────────────────────────────────────────────── 
+└────────────────────────────────────────────
