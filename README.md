@@ -1,10 +1,14 @@
 # interceptor
 
 漂亮的OkHTTP网络请求打印日志。
+A pretty log printer for the OkHttp.
 
-### 依赖
+### Dependency
 
 Jitpack[![](https://jitpack.io/v/neo-turak/interceptor.svg)](https://jitpack.io/#neo-turak/interceptor)
+
+please add the Jitpack repository first.
+Inside the settings.gradle
 
 ~~~groovy
 //jitpack
@@ -13,6 +17,12 @@ allprojects {
         maven { url 'https://jitpack.io' }
     }
 }
+~~~
+
+then add the dependency
+usually inside build.gradle file under app Module.
+
+~~~groovy
 //dependency
 dependencies {
     //please replace the tag with the version code above.
@@ -20,21 +30,26 @@ dependencies {
 }
 ~~~
 
-### 使用方法
+### Use
 
 ~~~kotlin
-//定义对象
+//Declare the RequestInterceptor.
 val requestInterceptor = RequestInterceptor.Builder()
     .setPrintLevel(PrintLevel.RESPONSE)
     .setFormatPrinter(DefaultFormatPrinter())
     .build()
-//添加到okHttp构造内
+//add to okHttp interceptor
 val okHttpClient = OkHttpClient.Builder()
     .addInterceptor(requestInterceptor)
     .build()
  ~~~
 
-## 效果
+### Advanced
+
+or you can implement your own LogPrinter.
+just implement to FormatPrinter then you are ready to go.
+
+## Result
 
 ┌────── Response ──────────────────────────
 │
@@ -64,4 +79,6 @@ val okHttpClient = OkHttpClient.Builder()
 │ },                                                                                    
 │     "time": 1684124415                                                                    
 │ }                                                                                         
-└──────────────────────────────────────────── 
+└────────────────────────────────────────────
+
+### have fun and enjoy.
