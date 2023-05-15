@@ -51,12 +51,12 @@ just implement to FormatPrinter then you are ready to go.
 
 ## Result
 
-┌────── Response ──────────────────────────────────
-│
+┌────── Response ──────────────────────────────────                               
+│                                                                                           
 | URL: http://api.txapi.cn/v1/hitokoto                            
 │                                                                                           
 │ /v1/hitokoto - is success : true - Received in: 70ms                                      
-│                                                                                           
+│                                                                                            
 │ Status Code: 200 / OK                                                                     
 │                                                                                           
 │ Headers:                                                                                  
