@@ -2,14 +2,32 @@
 
 漂亮的OkHTTP网络请求打印日志。
 
+### 依赖
+
+Jitpack[![](https://jitpack.io/v/neo-turak/interceptor.svg)](https://jitpack.io/#neo-turak/interceptor)
+
+~~~groovy
+//jitpack
+allprojects {
+    repositories {
+        maven { url 'https://jitpack.io' }
+    }
+}
+//dependency
+dependencies {
+    //please replace the tag with the version code above.
+    implementation 'com.github.neo-turak:interceptor:tag'
+}
+~~~
+
 ### 使用方法
 
 ~~~kotlin
 //定义对象
-        val requestInterceptor = RequestInterceptor.Builder()
-            .setPrintLevel(PrintLevel.RESPONSE)
-            .setFormatPrinter(DefaultFormatPrinter())
-            .build()
+val requestInterceptor = RequestInterceptor.Builder()
+    .setPrintLevel(PrintLevel.RESPONSE)
+    .setFormatPrinter(DefaultFormatPrinter())
+    .build()
 //添加到okHttp构造内
 val okHttpClient = OkHttpClient.Builder()
     .addInterceptor(requestInterceptor)
@@ -19,7 +37,8 @@ val okHttpClient = OkHttpClient.Builder()
 ## 效果
 
 ┌────── Response ──────────────────────────
-│ URL: http://api.txapi.cn/v1/hitokoto                            
+│
+| URL: http://api.txapi.cn/v1/hitokoto                            
 │                                                                                           
 │ /v1/hitokoto - is success : true - Received in: 70ms                                      
 │                                                                                           
@@ -42,7 +61,7 @@ val okHttpClient = OkHttpClient.Builder()
 │         "type": "h",                                                                      
 │         "from": "卡萨布兰卡",                                                                  
 │         "creator": "小透明"                                                                  
-│     },                                                                                    
+│ },                                                                                    
 │     "time": 1684124415                                                                    
 │ }                                                                                         
-└────────────────────────────────────────────
+└──────────────────────────────────────────── 
