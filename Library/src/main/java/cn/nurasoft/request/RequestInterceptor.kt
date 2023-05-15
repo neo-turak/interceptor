@@ -65,7 +65,7 @@ private constructor(
         //打印响应结果
         var bodyString: String? = null
         if (responseBody != null && isParseable(responseBody.contentType())) {
-            bodyString = printResult(request, originalResponse, logResponse)
+            bodyString = printResult(originalResponse)
         }
         if (logResponse) {
             val segmentList: List<String?> = request.url.encodedPathSegments
@@ -99,7 +99,7 @@ private constructor(
      * @throws IOException
      */
     @Throws(IOException::class)
-    private fun printResult(request: Request, response: Response, logResponse: Boolean): String? {
+    private fun printResult(response: Response): String? {
         return try {
             //读取服务器返回的结果
             val responseBody = response.newBuilder().build().body
