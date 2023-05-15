@@ -1,6 +1,6 @@
 # interceptor
 
-漂亮的OkHTTP网络请求打印日志。
+漂亮的OkHTTP网络请求打印日志。   
 A pretty log printer for the OkHttp.
 
 ### Dependency
