@@ -92,9 +92,7 @@ private constructor(
     /**
      * 打印响应结果
      *
-     * @param request     [Request]
      * @param response    [Response]
-     * @param logResponse 是否打印响应结果
      * @return 解析后的响应结果
      * @throws IOException
      */
@@ -105,7 +103,7 @@ private constructor(
             val responseBody = response.newBuilder().build().body
             val source = responseBody!!.source()
             source.request(Long.MAX_VALUE) // Buffer the entire body.
-            val buffer = source.buffer()
+            val buffer = source.buffer
 
             //获取content的压缩类型
             val encoding = response
