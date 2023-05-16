@@ -30,7 +30,7 @@ android {
     afterEvaluate {
         generateReleaseBuildConfig.enabled = false
         generateDebugBuildConfig.enabled = false
-        generateReleaseResValues.enabled = false
+        generateReleaseResValues.enabled = true
         generateDebugResValues.enabled = false
     }
 }
