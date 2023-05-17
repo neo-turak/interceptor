@@ -21,8 +21,8 @@ private constructor(
     private val printLevel: PrintLevel
 ) : Interceptor {
     class Builder(
-      private var mPrinter: FormatPrinter = DefaultFormatPrinter(),
-        private var mPrintLevel: PrintLevel = PrintLevel.REQUEST
+        private var mPrinter: FormatPrinter = DefaultFormatPrinter(),
+        private var mPrintLevel: PrintLevel = PrintLevel.RESPONSE
     ) {
         fun setFormatPrinter(printer: FormatPrinter): Builder {
             this.mPrinter = printer
@@ -72,17 +72,22 @@ private constructor(
             val header = originalResponse.headers.toString()
             val code = originalResponse.code
             val isSuccessful = originalResponse.isSuccessful
+            val requestMethod = originalResponse.request.method
             val message = originalResponse.message
             val url = originalResponse.request.url.toString()
             if (responseBody != null && isParseable(responseBody.contentType())) {
                 mPrinter.printJsonResponse(
-                    TimeUnit.NANOSECONDS.toMillis(t2 - t1), isSuccessful,
-                    code, header, responseBody.contentType(), bodyString, segmentList, message, url
+                    TimeUnit.NANOSECONDS.toMillis(t2 - t1),
+                    isSuccessful, code, header,
+                    responseBody.contentType(), bodyString,
+                    segmentList, message, url, requestMethod
                 )
             } else {
                 mPrinter.printFileResponse(
                     TimeUnit.NANOSECONDS.toMillis(t2 - t1),
-                    isSuccessful, code, header, segmentList, message, url
+                    isSuccessful, code, header,
+                    segmentList, message, url,
+                    requestMethod
                 )
             }
         }

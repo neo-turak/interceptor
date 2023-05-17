@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val requestInterceptor = RequestInterceptor.Builder()
-            .setPrintLevel(PrintLevel.RESPONSE)
+            .setPrintLevel(PrintLevel.ALL)
             .setFormatPrinter(DefaultFormatPrinter())
             .build()
         val okHttpClient = OkHttpClient.Builder()

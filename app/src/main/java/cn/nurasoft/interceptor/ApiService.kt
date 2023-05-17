@@ -6,5 +6,5 @@ import retrofit2.http.Query
 interface ApiService {
 
     @GET("/v1/hitokoto")
-    suspend fun getTokoto(@Query("token") token: String = ""):TokoToModel
+    suspend fun getTokoto(@Query("token") token: String = "FtTtwONEZmM"): TokoToModel
 }

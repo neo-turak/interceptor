@@ -61,8 +61,16 @@ class DefaultFormatPrinter : FormatPrinter {
      * @param responseUrl  请求地址
      */
     override fun printJsonResponse(
-        chainMs: Long, isSuccessful: Boolean, code: Int, headers: String, contentType: MediaType?,
-        bodyString: String?, segments: List<String?>, message: String, responseUrl: String
+        chainMs: Long,
+        isSuccessful: Boolean,
+        code: Int,
+        headers: String,
+        contentType: MediaType?,
+        bodyString: String?,
+        segments: List<String?>,
+        message: String,
+        responseUrl: String,
+        requestMethod: String
     ) {
         var bs = bodyString
         bs = if (isJson(contentType)) jsonFormat(
@@ -73,7 +81,11 @@ class DefaultFormatPrinter : FormatPrinter {
         val urlLine = arrayOf(URL_TAG + responseUrl, N)
         Log.d(tag, RESPONSE_UP_LINE)
         logLines(tag, urlLine, true)
-        logLines(tag, getResponse(headers, chainMs, code, isSuccessful, segments, message), true)
+        logLines(
+            tag,
+            getResponse(headers, chainMs, code, isSuccessful, segments, message, requestMethod),
+            true
+        )
         logLines(tag, responseBody.split(LINE_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }
             .toTypedArray(), true)
         Log.d(tag, END_LINE)
@@ -92,20 +104,24 @@ class DefaultFormatPrinter : FormatPrinter {
      */
     override fun printFileResponse(
         chainMs: Long, isSuccessful: Boolean, code: Int, headers: String,
-        segments: List<String?>, message: String, responseUrl: String
+        segments: List<String?>, message: String, responseUrl: String, requestMethod: String
     ) {
         val tag = getTag(false)
         val urlLine = arrayOf(URL_TAG + responseUrl, N)
         Log.d(tag, RESPONSE_UP_LINE)
         logLines(tag, urlLine, true)
-        logLines(tag, getResponse(headers, chainMs, code, isSuccessful, segments, message), true)
+        logLines(
+            tag,
+            getResponse(headers, chainMs, code, isSuccessful, segments, message, requestMethod),
+            true
+        )
         logLines(tag, OMITTED_RESPONSE, true)
         Log.d(tag, END_LINE)
     }
 
     companion object {
         private const val TAG = "HttpLog"
-        private val LINE_SEPARATOR = System.getProperty("line.separator")?:"\n"
+        private val LINE_SEPARATOR = System.getProperty("line.separator") ?: "\n"
         private val DOUBLE_SEPARATOR = LINE_SEPARATOR + LINE_SEPARATOR
         private val OMITTED_RESPONSE = arrayOf(LINE_SEPARATOR, "Omitted response body")
         private val OMITTED_REQUEST = arrayOf(LINE_SEPARATOR, "Omitted request body")
@@ -119,9 +135,9 @@ class DefaultFormatPrinter : FormatPrinter {
             "   ┌────── Response ───────────────────────────────────────────────────────────────────────"
         private const val BODY_TAG = "Body:"
         private const val URL_TAG = "URL: "
-        private const val METHOD_TAG = "Method: @"
+        private const val METHOD_TAG = "Method: "
         private const val HEADERS_TAG = "Headers:"
-        private const val STATUS_CODE_TAG = "Status Code: "
+        private const val STATUS_CODE_TAG = "Status: "
         private const val RECEIVED_TAG = "Received in: "
         private const val CORNER_UP = "┌ "
         private const val CORNER_BOTTOM = "└ "
@@ -129,7 +145,7 @@ class DefaultFormatPrinter : FormatPrinter {
         private const val DEFAULT_LINE = "│ "
 
         //来自上游的配置，我不修改。为了解决android studio打印的问题。
-        private val MARS = arrayOf( "-M-","-A-", "-R-", "-S-")
+        private val MARS = arrayOf("-M-", "-A-", "-R-", "-S-")
         private val last: ThreadLocal<Int> = object : ThreadLocal<Int>() {
             override fun initialValue(): Int {
                 return 0
@@ -198,16 +214,38 @@ class DefaultFormatPrinter : FormatPrinter {
 
         private fun getResponse(
             header: String, tookMs: Long, code: Int, isSuccessful: Boolean,
-            segments: List<String?>, message: String
+            segments: List<String?>, message: String, method: String,
         ): Array<String> {
-            val log: String
+            val log = StringBuilder()
             val segmentString = slashSegments(segments)
-            log =
-                ((if (!TextUtils.isEmpty(segmentString)) "$segmentString - " else "") + "is success : "
-                        + isSuccessful + " - " + RECEIVED_TAG + tookMs + "ms" + DOUBLE_SEPARATOR + STATUS_CODE_TAG +
-                        code + " / " + message + DOUBLE_SEPARATOR + if (isEmpty(header)) "" else HEADERS_TAG + LINE_SEPARATOR +
-                        dotHeaders(header))
-            return log.split(LINE_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }
+            log.append("Basic info:")
+            log.append(LINE_SEPARATOR)
+            log.append(CORNER_UP)
+            log.append("Method: ${method} ")
+            log.append(LINE_SEPARATOR)
+            if (!TextUtils.isEmpty(segmentString)) {
+                log.append(CENTER_LINE)
+                log.append("Path: $segmentString ")
+                log.append(LINE_SEPARATOR)
+            }
+            log.append(CENTER_LINE)
+            log.append("Success: $isSuccessful ")
+            log.append(LINE_SEPARATOR)
+            log.append(CENTER_LINE)
+            log.append("Time: ${tookMs}ms ")
+            log.append(LINE_SEPARATOR)
+            log.append(CENTER_LINE)
+            log.append("${STATUS_CODE_TAG}${code} ")
+            log.append(LINE_SEPARATOR)
+            log.append(CORNER_BOTTOM)
+            log.append("Message: $message")
+            log.append(DOUBLE_SEPARATOR)
+            if (!isEmpty(header)) {
+                log.append(HEADERS_TAG)
+                log.append(LINE_SEPARATOR)
+                log.append(dotHeaders(header))
+            }
+            return log.toString().split(LINE_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }
                 .toTypedArray()
         }
 

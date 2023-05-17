@@ -38,10 +38,19 @@ interface FormatPrinter {
      * @param segments     域名后面的资源地址
      * @param message      响应信息
      * @param responseUrl  请求地址
+     * @param requestMethod 请求类型
      */
     fun printJsonResponse(
-        chainMs: Long, isSuccessful: Boolean, code: Int, headers: String, contentType: MediaType?,
-        bodyString: String?, segments: List<String?>, message: String, responseUrl: String
+        chainMs: Long,
+        isSuccessful: Boolean,
+        code: Int,
+        headers: String,
+        contentType: MediaType?,
+        bodyString: String?,
+        segments: List<String?>,
+        message: String,
+        responseUrl: String,
+        requestMethod: String
     )
 
     /**
@@ -54,9 +63,10 @@ interface FormatPrinter {
      * @param segments     域名后面的资源地址
      * @param message      响应信息
      * @param responseUrl  请求地址
+     * @param requestMethod 请求类型
      */
     fun printFileResponse(
         chainMs: Long, isSuccessful: Boolean, code: Int, headers: String,
-        segments: List<String?>, message: String, responseUrl: String
+        segments: List<String?>, message: String, responseUrl: String, requestMethod: String
     )
 }
