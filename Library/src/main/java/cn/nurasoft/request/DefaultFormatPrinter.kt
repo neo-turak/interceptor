@@ -73,10 +73,9 @@ class DefaultFormatPrinter : FormatPrinter {
         requestMethod: String
     ) {
         var bs = bodyString
-        bs = if (isJson(contentType)) jsonFormat(
-            bs!!
-        ) else if (isXml(contentType)) xmlFormat(bs) else bs
-        val responseBody = LINE_SEPARATOR + BODY_TAG + LINE_SEPARATOR + bs
+        bs =
+            if (isJson(contentType)) jsonFormat(bs!!) else if (isXml(contentType)) xmlFormat(bs) else bs
+        val responseBody = (LINE_SEPARATOR + BODY_TAG + LINE_SEPARATOR + bs)
         val tag = getTag(false)
         val urlLine = arrayOf(URL_TAG + responseUrl, N)
         Log.d(tag, RESPONSE_UP_LINE)
@@ -120,7 +119,7 @@ class DefaultFormatPrinter : FormatPrinter {
     }
 
     companion object {
-        private const val TAG = "HttpLog"
+        private const val TAG = "Http"
         private val LINE_SEPARATOR = System.getProperty("line.separator") ?: "\n"
         private val DOUBLE_SEPARATOR = LINE_SEPARATOR + LINE_SEPARATOR
         private val OMITTED_RESPONSE = arrayOf(LINE_SEPARATOR, "Omitted response body")
@@ -221,7 +220,7 @@ class DefaultFormatPrinter : FormatPrinter {
             log.append("Basic info:")
             log.append(LINE_SEPARATOR)
             log.append(CORNER_UP)
-            log.append("Method: ${method} ")
+            log.append("Method: $method ")
             log.append(LINE_SEPARATOR)
             if (!TextUtils.isEmpty(segmentString)) {
                 log.append(CENTER_LINE)

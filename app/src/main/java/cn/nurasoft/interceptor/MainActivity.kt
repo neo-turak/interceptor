@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         val re = Retrofit.Builder()
-            .baseUrl("http://api.txapi.cn")
+            .baseUrl("https://www.ghxi.com/")
             .addConverterFactory(GsonConverterFactory.create())
             .client(okHttpClient)
             .build()
