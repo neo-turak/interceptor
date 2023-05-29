@@ -170,7 +170,10 @@ class DefaultFormatPrinter : FormatPrinter {
                     val start = i * maxLongSize
                     var end = (i + 1) * maxLongSize
                     end = end.coerceAtMost(line.length)
-                    Log.d(resolveTag(tag), DEFAULT_LINE + line.substring(start, end))
+                    Log.d(
+                        resolveTag(tag),
+                        DEFAULT_LINE + line.substring(start, end).replace("\\", "")
+                    )
                 }
             }
         }
