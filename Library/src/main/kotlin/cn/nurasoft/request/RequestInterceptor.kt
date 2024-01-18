@@ -1,5 +1,6 @@
 package cn.nurasoft.request
 
+import android.net.Uri
 import android.util.Log
 import cn.nurasoft.request.CharacterHandler.Companion.jsonFormat
 import okhttp3.*
@@ -182,7 +183,7 @@ private constructor(
                 }
                 var json: String = mBuffer.readString(charset!!)
                 if (UrlEncoderUtils.hasUrlEncoded(json)) {
-                    json = URLDecoder.decode(json, convertCharset(charset))
+                    json = Uri.decode(json)
                 }
                 jsonFormat(json)
             } catch (e: IOException) {
