@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         val re = Retrofit.Builder()
-            .baseUrl("https://www.ghxi.com/")
+            .baseUrl("http://192.168.3.57:8000/")
             .addConverterFactory(GsonConverterFactory.create())
             .client(okHttpClient)
             .build()
@@ -46,9 +46,9 @@ class MainActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btnRequest).setOnClickListener {
             lifecycleScope.launch {
                 runCatching {
-                    val response = service.getTokoto()
+                    val response = service.getArticles("哎呀呀","你丫丫")
                     val tv = findViewById<TextView>(R.id.lvMain)
-                    tv.text = response.data.content
+                    tv.text = response.body()?.data?.toString()
                 }.onFailure {
                     Log.e(this.javaClass.simpleName,it.stackTraceToString())
                 }

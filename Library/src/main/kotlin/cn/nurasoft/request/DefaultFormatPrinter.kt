@@ -127,11 +127,11 @@ class DefaultFormatPrinter : FormatPrinter {
         private const val N = "\n"
         private const val T = "\t"
         private const val REQUEST_UP_LINE =
-            "   ┌────── Request ────────────────────────────────────────────────────────────────────────"
+            "┌────── Request ────────────────────────────────────────────────────────────────────────"
         private const val END_LINE =
-            "   └───────────────────────────────────────────────────────────────────────────────────────"
+            "└───────────────────────────────────────────────────────────────────────────────────────"
         private const val RESPONSE_UP_LINE =
-            "   ┌────── Response ───────────────────────────────────────────────────────────────────────"
+            "┌────── Response ───────────────────────────────────────────────────────────────────────"
         private const val BODY_TAG = "Body:"
         private const val URL_TAG = "URL: "
         private const val METHOD_TAG = "Method: "
@@ -205,7 +205,7 @@ class DefaultFormatPrinter : FormatPrinter {
         private fun getRequest(request: Request): Array<String> {
             val log: String
             val header = request.headers.toString()
-            log = METHOD_TAG + request.method + DOUBLE_SEPARATOR + if (isEmpty(header)
+            log = METHOD_TAG + request.method + LINE_SEPARATOR + if (isEmpty(header)
             ) "" else HEADERS_TAG + LINE_SEPARATOR + dotHeaders(header)
             return log.split(LINE_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }
                 .toTypedArray()

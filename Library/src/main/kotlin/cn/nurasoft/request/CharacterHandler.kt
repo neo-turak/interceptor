@@ -1,14 +1,12 @@
 package cn.nurasoft.request
 
-import android.text.InputFilter
-import android.text.Spanned
 import android.text.TextUtils
+import android.util.Log
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.StringReader
 import java.io.StringWriter
-import java.util.regex.Pattern
 import javax.xml.transform.OutputKeys
 import javax.xml.transform.Source
 import javax.xml.transform.TransformerException
@@ -24,23 +22,6 @@ import javax.xml.transform.stream.StreamSource
 class CharacterHandler
 private constructor() {
     companion object {
-        val emojiFilter: InputFilter = object : InputFilter {
-            //emoji过滤器
-            val emoji = Pattern.compile(
-                "[\ud83c\udc00-\ud83c\udfff]|[\ud83d\udc00-\ud83d\udfff]|[\u2600-\u27ff]",
-                Pattern.UNICODE_CASE or Pattern.CASE_INSENSITIVE
-            )
-
-            override fun filter(
-                source: CharSequence, start: Int, end: Int, dest: Spanned, dstart: Int,
-                dend: Int
-            ): String? {
-                val emojiMatcher = emoji.matcher(source)
-                return if (emojiMatcher.find()) {
-                    ""
-                } else null
-            }
-        }
 
         /**
          * json 格式化
@@ -48,7 +29,7 @@ private constructor() {
          * @param targetJson target for format.
          * @return the formatted json string.
          */
-        @JvmStatic
+
         fun jsonFormat(targetJson: String): String {
             var json = targetJson
             if (TextUtils.isEmpty(json)) {
@@ -64,7 +45,7 @@ private constructor() {
                     val jsonArray = JSONArray(json)
                     jsonArray.toString(4)
                 } else {
-                    json
+                    formFormat(json)
                 }
             } catch (e: JSONException) {
                 message = json
@@ -74,13 +55,51 @@ private constructor() {
             return message
         }
 
+        fun formatString(str: String): String {
+            return if (isJson(str)) {
+                jsonFormat(str)
+            } else {
+                formFormat(str)
+            }
+        }
+
+
+        private fun isJson(str: String): Boolean {
+            return try {
+                JSONObject(str)
+                true
+            } catch (e: Exception) {
+                false
+            }
+        }
+
+
+        private fun formFormat(target: String): String {
+            var message: String
+            val countEqual = target.count { it == '=' }
+            if (countEqual == 1) {
+                val start = "****${target.substringBefore("=")}****\n"
+                Log.d("START", start)
+                val end = target.substringAfter("=")
+                if (isJson(end)) {
+                    message = jsonFormat(end)
+                } else {
+                    message = start + end.replace("&", "\n")
+                }
+            } else {
+                message = target.replace("&", "\n")
+            }
+            message = message.plus("\n")
+            return message
+        }
+
         /**
          * xml 格式化
          *
          * @param xml the target for format
          * @return  the formatted string.
          */
-        @JvmStatic
+
         fun xmlFormat(xml: String?): String? {
             if (TextUtils.isEmpty(xml)) {
                 return "Empty/Null xml content"

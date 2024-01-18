@@ -2,11 +2,10 @@ package cn.nurasoft.request
 
 import android.net.Uri
 import android.util.Log
-import cn.nurasoft.request.CharacterHandler.Companion.jsonFormat
+import cn.nurasoft.request.CharacterHandler.Companion.formatString
 import okhttp3.*
 import okio.Buffer
 import java.io.IOException
-import java.net.URLDecoder
 import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
 import java.util.*
@@ -185,7 +184,7 @@ private constructor(
                 if (UrlEncoderUtils.hasUrlEncoded(json)) {
                     json = Uri.decode(json)
                 }
-                jsonFormat(json)
+                formatString(json)
             } catch (e: IOException) {
                 e.printStackTrace()
                 "{\"error\": \"" + e.message + "\"}"
