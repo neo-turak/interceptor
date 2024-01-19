@@ -23,6 +23,26 @@ class CharacterHandler
 private constructor() {
     companion object {
 
+
+
+        private fun isJson(str: String): Boolean {
+            return try {
+                JSONObject(str)
+                true
+            } catch (e: Exception) {
+                false
+            }
+        }
+
+        fun formatString(str: String): String {
+            return if (isJson(str)) {
+                jsonFormat(str)
+            } else {
+                formFormat(str)
+            }
+        }
+
+
         /**
          * json 格式化
          *
@@ -32,9 +52,6 @@ private constructor() {
 
         fun jsonFormat(targetJson: String): String {
             var json = targetJson
-            if (TextUtils.isEmpty(json)) {
-                return "Empty/Null json content"
-            }
             var message: String
             try {
                 json = json.trim { it <= ' ' }
@@ -55,41 +72,33 @@ private constructor() {
             return message
         }
 
-        fun formatString(str: String): String {
-            return if (isJson(str)) {
-                jsonFormat(str)
-            } else {
-                formFormat(str)
-            }
-        }
-
-
-        private fun isJson(str: String): Boolean {
-            return try {
-                JSONObject(str)
-                true
-            } catch (e: Exception) {
-                false
-            }
-        }
-
-
         private fun formFormat(target: String): String {
-            var message: String
+            val message: String
             val countEqual = target.count { it == '=' }
             if (countEqual == 1) {
-                val start = "****${target.substringBefore("=")}****\n"
-                Log.d("START", start)
+                val start = target.substringBefore("=")
                 val end = target.substringAfter("=")
                 if (isJson(end)) {
-                    message = jsonFormat(end)
+                    message = start.plus("=").plus(jsonFormat(end))
                 } else {
-                    message = start + end.replace("&", "\n")
+                    message = target
                 }
             } else {
-                message = target.replace("&", "\n")
+                val spitStr = target.split("&")
+                val builder =StringBuilder()
+                spitStr.forEach {
+                    val start = it.substringBefore("=")
+                    val end = it.substringAfter("=")
+                    if (isJson(end)){
+                        builder.append(start.plus("="))
+                        builder.append(jsonFormat(end))
+                    }else{
+                        builder.append(it)
+                    }
+                    builder.append("\n")
+                }
+                message = builder.toString()
             }
-            message = message.plus("\n")
             return message
         }
 
