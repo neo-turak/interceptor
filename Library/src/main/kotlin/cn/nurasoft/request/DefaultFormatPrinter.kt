@@ -72,7 +72,7 @@ class DefaultFormatPrinter : FormatPrinter {
         responseUrl: String,
         requestMethod: String
     ) {
-        var bs = bodyString
+        var bs = bodyString?.replace("\\","")
         bs =
             if (isJson(contentType)) jsonFormat(bs!!) else if (isXml(contentType)) xmlFormat(bs) else bs
         val responseBody = (LINE_SEPARATOR + BODY_TAG + LINE_SEPARATOR + bs)
